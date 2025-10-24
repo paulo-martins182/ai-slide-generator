@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 function UnAuthorized() {
   return (
-    <div className="h-screen flex items-center mx-auto justify-center flex-col gap-4">
+    <div className="mx-auto mt-32 flex items-center justify-center flex-col gap-4">
       <h2 className="text-2xl font-bold">
         Please Sign in to access this page.
       </h2>
@@ -13,7 +13,7 @@ function UnAuthorized() {
         <Link to="/">
           <Button>Go to Home</Button>
         </Link>
-        <SignInButton>
+        <SignInButton mode="modal">
           <Button>Sign In</Button>
         </SignInButton>
       </div>
