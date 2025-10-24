@@ -1,22 +1,21 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App.tsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import WorksPace from "./pages/workspace/index.tsx";
-import Project from "./pages/workspace/project/index.tsx";
+import { RouterProvider } from "react-router-dom";
+import { ClerkProvider } from "@clerk/clerk-react";
+import router from "./routes";
 
-const router = createBrowserRouter([
-  { path: "/", element: <App /> },
-  {
-    path: "/workspace",
-    element: <WorksPace />,
-    children: [{ path: "project", element: <Project /> }],
-  },
-]);
+import "./index.css";
+
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+if (!PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key");
+}
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+      <RouterProvider router={router} />
+    </ClerkProvider>
   </StrictMode>
 );
