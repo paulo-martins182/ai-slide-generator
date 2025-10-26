@@ -1,8 +1,8 @@
+import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 import RootLayout from "@/components/layout/RootLayout";
 import WorksPace from "@/pages/workspace";
-import Project from "@/pages/workspace/project";
-import { createBrowserRouter } from "react-router-dom";
+import Outline from "@/pages/workspace/project/outline";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +13,9 @@ const router = createBrowserRouter([
       {
         path: "/workspace",
         element: <WorksPace />,
-        children: [{ path: "project/:projectId", element: <Project /> }],
+        children: [
+          { path: "project/:projectId/outline", element: <Outline /> },
+        ],
       },
     ],
   },
