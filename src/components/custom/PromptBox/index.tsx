@@ -44,7 +44,7 @@ function PromptBox() {
   const [userInput, setUserInput] = useState("");
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
-  const [noOfSlider, setNoOfSlider] = useState("4 to 6");
+  const [noOfSliders, setNoOfSliders] = useState("4 to 6");
   const navigate = useNavigate();
 
   const handleChangePrompt = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -64,7 +64,7 @@ function PromptBox() {
         userInputPrompt: userInput,
         createBy: user?.primaryEmailAddress?.emailAddress,
         createdAt: new Date(),
-        noOfSlider: noOfSlider,
+        noOfSliders: noOfSliders,
       },
     });
 
@@ -97,7 +97,11 @@ function PromptBox() {
               <PlusIcon />
             </InputGroupButton> */}
 
-            <Select onValueChange={(v) => setNoOfSlider(v)}>
+            <Select
+              onValueChange={(v) => setNoOfSliders(v)}
+              disabled
+              defaultValue="4 to 6"
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select No. of sliders" />
               </SelectTrigger>

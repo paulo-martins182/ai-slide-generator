@@ -3,6 +3,7 @@ import App from "@/App";
 import RootLayout from "@/components/layout/RootLayout";
 import WorksPace from "@/pages/workspace";
 import Outline from "@/pages/workspace/project/outline";
+import Editor from "@/pages/workspace/project/editor";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
         element: <WorksPace />,
         children: [
           { path: "project/:projectId/outline", element: <Outline /> },
+          { path: "project/:projectId/editor", element: <Editor /> },
         ],
       },
     ],
