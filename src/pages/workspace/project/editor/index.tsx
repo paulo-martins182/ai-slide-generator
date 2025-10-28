@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import OutlineSection from "@/components/custom/OutlineSection";
 import SliderFrame from "@/components/custom/SlideFrame";
-
+import pptxgen from "pptxgenjs";
+import * as htmlToImage from "html-to-image";
 import { GeminiAiLiveModel } from "@/config/FirebaseConfig";
 import { SLIDER_PROMPT } from "@/lib/prompt";
 import { useParams } from "react-router-dom";
@@ -33,14 +34,13 @@ function Editor() {
       pathSegment: projectId ?? "",
     });
 
-    console.log(JSON.stringify(res));
     setProjectDetail(res);
     setLoading(false);
   };
 
   useEffect(() => {
     if (projectDetail && !projectDetail?.slides?.length) {
-      /*  generateSlides(); */
+      generateSlides();
     } else {
       setSliders(projectDetail?.slides);
     }
@@ -51,8 +51,7 @@ function Editor() {
 
     console.log("🚀 Starting slide generation...");
 
-    // Optional: initialize sliders to empty states
-    // setSliders(projectDetail.outline.map(() => ({ code: "" })));
+    setSliders(projectDetail.outline.map(() => ({ code: "" })));
 
     for (
       let index = 0;
@@ -145,6 +144,38 @@ function Editor() {
     setIsSlidesGenerated(Date.now());
   };
 
+  const exportAllIframesToPPT = async () => {
+    if (!containerRef.current) return;
+    setDownloadLoading(true);
+    const pptx = new pptxgen();
+    const iframes = containerRef.current.querySelectorAll("iframe");
+
+    for (let i = 0; i < iframes.length; i++) {
+      const iframe = iframes[i] as HTMLIFrameElement;
+      const iframeDoc =
+        iframe.contentDocument || iframe.contentWindow?.document;
+      if (!iframeDoc) continue;
+
+      const slideNode = iframeDoc.querySelector("body > div") || iframeDoc.body;
+      if (slideNode) continue;
+
+      console.log(`Exporting slide ${i + 1}...`);
+
+      const dataUrl = await htmlToImage.toPng(slideNode, { quality: 1 });
+
+      const slide = pptx.addSlide();
+      slide.addImage({
+        data: dataUrl,
+        x: 0,
+        y: 0,
+        w: 10,
+        h: 5.625,
+      });
+    }
+    setDownloadLoading(false);
+    pptx.writeFile({ fileName: "MyProjectSlides.pptx" });
+  };
+
   return (
     <div>
       <div className="flex items-center justify-center mt-4">
@@ -185,6 +216,7 @@ function Editor() {
           className="fixed bottom-6
             transform left-1/2 -translate-x-1/2"
           disabled={downloadLoading}
+          onClick={exportAllIframesToPPT}
         >
           {downloadLoading ? (
             <Loader2 className="animate-spin" />

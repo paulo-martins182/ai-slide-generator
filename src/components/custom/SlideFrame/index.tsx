@@ -3,6 +3,7 @@ import { GeminiAiModel } from "@/config/FirebaseConfig";
 import { HTML_DEFAULT } from "@/lib/template_default";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import FloatActions from "../FloatActions";
 
 type props = {
   slide: { code: string };
@@ -11,7 +12,6 @@ type props = {
 };
 
 function SliderFrame({ slide, colors, setUpdateSlider }: props) {
-  const { projectId } = useParams();
   const FINAL_CODE = HTML_DEFAULT.replace(
     "{colorCodes}",
     JSON.stringify(colors)
@@ -30,13 +30,9 @@ function SliderFrame({ slide, colors, setUpdateSlider }: props) {
     const doc = iframeRef.current.contentDocument;
     if (!doc) return;
 
-    // Write the HTML inside the iframe
     doc.open();
     doc.write(FINAL_CODE);
     doc.close();
-
-    // Allow iframe to capture keyboard events
-    //doc.body.setAttribute("tabindex", "0");
 
     let hoverEl: HTMLElement | null = null;
     let selectedEl: HTMLElement | null = null;
@@ -58,7 +54,7 @@ function SliderFrame({ slide, colors, setUpdateSlider }: props) {
     };
 
     const handleClick = (e: MouseEvent) => {
-      e.stopPropagation(); // ✅ allow editing text inside
+      e.stopPropagation();
       const target = e.target as HTMLElement;
 
       if (selectedEl && selectedEl !== target) {
@@ -80,11 +76,6 @@ function SliderFrame({ slide, colors, setUpdateSlider }: props) {
       selectedEl.setAttribute("contenteditable", "true");
       selectedEl.focus();
 
-      console.log("Selected element:", selectedEl);
-      // ✅ Attach blur event dynamically
-      // selectedEl?.addEventListener("blur", handleBlur);
-
-      // ✅ Calculate position relative to iframe container
       const rect = target.getBoundingClientRect();
       const iframeRect = iframe.getBoundingClientRect();
 
@@ -94,38 +85,36 @@ function SliderFrame({ slide, colors, setUpdateSlider }: props) {
       });
     };
 
-    const handleBlur = () => {
+    /*    const handleBlur = () => {
       if (selectedEl) {
         console.log("Final edited element:", selectedEl.outerHTML);
         const updatedSliderCode = iframe.contentDocument?.body?.innerHTML;
         console.log(updatedSliderCode);
         setUpdateSlider(updatedSliderCode);
       }
-    };
+    }; */
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+    /*     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && selectedEl) {
         selectedEl.style.outline = "";
         selectedEl.removeAttribute("contenteditable");
         selectedEl.removeEventListener("blur", handleBlur);
         selectedEl = null;
       }
-    };
+    }; */
 
-    // ✅ Wait for DOM content to be ready
     doc.addEventListener("DOMContentLoaded", () => {
       doc.body?.addEventListener("mouseover", handleMouseOver);
       doc.body?.addEventListener("mouseout", handleMouseOut);
       doc.body?.addEventListener("click", handleClick);
-      doc.body?.addEventListener("keydown", handleKeyDown);
+      /*      doc.body?.addEventListener("keydown", handleKeyDown); */
     });
 
-    // ✅ Cleanup listeners on unmount
     return () => {
       doc.body?.removeEventListener("mouseover", handleMouseOver);
       doc.body?.removeEventListener("mouseout", handleMouseOut);
       doc.body?.removeEventListener("click", handleClick);
-      doc.body?.removeEventListener("keydown", handleKeyDown);
+      /*     doc.body?.removeEventListener("keydown", handleKeyDown); */
     };
   }, [slide?.code]);
 
@@ -136,29 +125,24 @@ function SliderFrame({ slide, colors, setUpdateSlider }: props) {
 
     if (!selectedEl || !iframe) return;
 
-    // Get the current HTML of the selected element
     const oldHTML = selectedEl.outerHTML;
-
-    // Build AI prompt
-
     const prompt = `
-  Regenerate or rewrite the following HTML code based on this user instruction.
-  If user asked to change the image/regenerate the image then make sure to use
-  ImageKit:
-'https://ik.imagekit.io/ikmedia/ik-genimg-prompt-{imagePrompt}/{altImageName}.jpg'
-Replace {imagePrompt} with relevant image prompt and altImageName with a random image name.
-if user want to crop image, or remove background or scale image or optimze image then add image kit ai transfromation 
-by providing ?tr=fo-auto,<other transfromation> etc.  
-  "User Instruction is :${userAiPrompt}"
-  HTML code:
-  ${oldHTML}
-  `;
+      Regenerate or rewrite the following HTML code based on this user instruction.
+      If user asked to change the image/regenerate the image then make sure to use
+      ImageKit:
+      'https://ik.imagekit.io/ikmedia/ik-genimg-prompt-{imagePrompt}/{altImageName}.jpg'
+      Replace {imagePrompt} with relevant image prompt and altImageName with a random image name.
+      if user want to crop image, or remove background or scale image or optimze image then add image kit ai transfromation 
+      by providing ?tr=fo-auto,<other transfromation> etc.  
+      "User Instruction is :${userAiPrompt}"
+      HTML code:
+      ${oldHTML}
+    `;
 
     try {
       const result = await GeminiAiModel.generateContent(prompt);
       const newHTML = (await result.response.text()).trim();
 
-      // ✅ Replace only the selected element
       const tempDiv = iframe.contentDocument?.createElement("div");
       if (tempDiv) {
         tempDiv.innerHTML = newHTML;
@@ -171,7 +155,6 @@ by providing ?tr=fo-auto,<other transfromation> etc.
 
           const updatedSliderCode =
             iframe.contentDocument?.body?.innerHTML || newHTML;
-          console.log(updatedSliderCode);
           setUpdateSlider(updatedSliderCode);
         }
       }
@@ -182,18 +165,6 @@ by providing ?tr=fo-auto,<other transfromation> etc.
     setLoading(false);
   };
 
-  // ✅ Save slides to Firebase
-  /*    const SaveAllSlides = async (updatedSlides: any[]) => {
-        if (!projectId) return;
-        await setDoc(
-            doc(firebaseDb, "projects", projectId),
-            { slides: updatedSlides },
-            { merge: true }
-        );
-        console.log("✅ Slides updated to Firestore");
-    };
- */
-
   return (
     <div className="mb-5">
       <iframe
@@ -202,11 +173,12 @@ by providing ?tr=fo-auto,<other transfromation> etc.
         sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups" // ✅ full sandbox permissions
       />
 
-      {/*  <FloatingActionTool position={cardPosition}
-                onClose={() => setCardPosition(null)}
-                loading={loading}
-                handleAiChange={(value: string) => handleAiSectionChange(value)}
-            /> */}
+      <FloatActions
+        position={cardPosition}
+        onClose={() => setCardPosition(null)}
+        loading={loading}
+        handleAiChange={(value: string) => handleAiSectionChange(value)}
+      />
     </div>
   );
 }
