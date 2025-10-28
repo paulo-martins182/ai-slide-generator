@@ -1,73 +1,45 @@
-# React + TypeScript + Vite
+# 🎨 Ai Slide Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Um app que usa IA para ajudar a criar apresentações de forma rápida e simples  
+Ainda estou ajustando alguns detalhes do código, mas o app já está totalmente funcional
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 🏠 Home
+Na tela inicial o usuário pode acessar o workspace ou fazer login
 
-## React Compiler
+<p align="center">
+  <img src="./src/assets/bg-home.png" alt="Home" width="700"/>
+</p>
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+### 💼 Workspace
+Aqui ficam listados todos os projetos do usuário  
+É possível criar um novo projeto diretamente no prompt e começar a edição
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 🧩 Editor de Outline
+Depois de criar o projeto o usuário é redirecionado para a tela de outline  
+Nessa parte ele define os tópicos e configura as informações que vão gerar os slides
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 🎬 Editor de Slide
+Com o outline pronto o usuário pode editar cada slide, salvar as mudanças e usar IA para gerar automaticamente o conteúdo  
+No final é possível exportar a apresentação pronta
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### ⚙️ Tecnologias
+React  
+Firebase  
+TypeScript  
+TailwindCSS  
+[Bidirectional streaming using the Gemini Live API](https://ai-slide-generator.vercel.app).
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+
+### 🚀 Status
+Em desenvolvimento mas já funcional  

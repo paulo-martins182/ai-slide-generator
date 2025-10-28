@@ -23,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 
 const valuesSliderToSelect = [
   {
-    value: "4 to 6",
+    value: "4 to 4",
     label: "4-6 sliders",
   },
   {
@@ -44,7 +44,7 @@ function PromptBox() {
   const [userInput, setUserInput] = useState("");
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
-  const [noOfSliders, setNoOfSliders] = useState("4 to 6");
+  const [noOfSliders, setNoOfSliders] = useState("4 to 4");
   const navigate = useNavigate();
 
   const handleChangePrompt = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

@@ -51,7 +51,7 @@ function Editor() {
 
     console.log("🚀 Starting slide generation...");
 
-    setSliders(projectDetail.outline.map(() => ({ code: "" })));
+    /* setSliders(projectDetail.outline.map(() => ({ code: "" }))); */
 
     for (
       let index = 0;

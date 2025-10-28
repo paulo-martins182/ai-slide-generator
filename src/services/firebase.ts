@@ -1,7 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import type { ProjectTypes } from "@/@types/projectType";
 import { firebaseDb } from "../config/FirebaseConfig";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 
 type createNewUserProps = {
   user?: any;
@@ -84,6 +93,33 @@ export const getDocById = async ({
     return docSnap.data();
   } catch (e) {
     return { message: "Something went wrong", error: e };
+  }
+};
+
+export const getAllDocs = async ({
+  pathName,
+  userEmail,
+}: {
+  pathName: string;
+  userEmail: string;
+}): Promise<ProjectTypes[]> => {
+  try {
+    const queryRef = query(
+      collection(firebaseDb, pathName),
+      where("createBy", "==", userEmail)
+    );
+
+    const snapShot = await getDocs(queryRef);
+    if (snapShot.empty) {
+      console.log("No matching documents.");
+    }
+
+    const data = snapShot.docs.map((doc) => doc.data()) as ProjectTypes[];
+
+    return data;
+  } catch (e) {
+    console.log("err", e);
+    return [];
   }
 };
 

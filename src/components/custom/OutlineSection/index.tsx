@@ -44,7 +44,11 @@ function OutlineSection({
               </div>
             </div>
             {editable && (
-              <EditOutlineDialog data={item} onUpdate={updateOutlineData}>
+              <EditOutlineDialog
+                data={item}
+                onUpdate={updateOutlineData}
+                allOutlines={outline}
+              >
                 <Button variant="ghost" size="icon-lg">
                   <Edit />
                 </Button>

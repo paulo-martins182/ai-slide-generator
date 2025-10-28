@@ -54,7 +54,8 @@ Also do not add any overlay : Avoid this :
     <div class="absolute inset-0 bg-gradient-to-br from-primary to-secondary opacity-20"></div>
 
 
-Just provide body content for 1 slider. Make sure all content, including images, stays within the main slide div and preserves the 16:9 ratio.`;
+Just provide body content for 1 slider. Make sure all content, including images, stays within the main slide div and preserves the 16:9 ratio.
+`;
 
 export const DUMMY_SLIDER = ` <!-- Slide Content Wrapper (Fixed 16:9 Aspect Ratio) -->
     <div class="w-[800px] h-[500px] relative bg-[#0D0D0D] text-white overflow-hidden">

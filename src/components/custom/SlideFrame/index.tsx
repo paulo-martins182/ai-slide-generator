@@ -1,8 +1,8 @@
-import type { DesignTypes } from "@/@types/projectType";
+import { useEffect, useRef, useState } from "react";
+
 import { GeminiAiModel } from "@/config/FirebaseConfig";
 import { HTML_DEFAULT } from "@/lib/template_default";
-import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+
 import FloatActions from "../FloatActions";
 
 type props = {
@@ -85,36 +85,36 @@ function SliderFrame({ slide, colors, setUpdateSlider }: props) {
       });
     };
 
-    /*    const handleBlur = () => {
+    const handleBlur = () => {
       if (selectedEl) {
         console.log("Final edited element:", selectedEl.outerHTML);
         const updatedSliderCode = iframe.contentDocument?.body?.innerHTML;
         console.log(updatedSliderCode);
         setUpdateSlider(updatedSliderCode);
       }
-    }; */
+    };
 
-    /*     const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && selectedEl) {
         selectedEl.style.outline = "";
         selectedEl.removeAttribute("contenteditable");
         selectedEl.removeEventListener("blur", handleBlur);
         selectedEl = null;
       }
-    }; */
+    };
 
     doc.addEventListener("DOMContentLoaded", () => {
       doc.body?.addEventListener("mouseover", handleMouseOver);
       doc.body?.addEventListener("mouseout", handleMouseOut);
       doc.body?.addEventListener("click", handleClick);
-      /*      doc.body?.addEventListener("keydown", handleKeyDown); */
+      doc.body?.addEventListener("keydown", handleKeyDown);
     });
 
     return () => {
       doc.body?.removeEventListener("mouseover", handleMouseOver);
       doc.body?.removeEventListener("mouseout", handleMouseOut);
       doc.body?.removeEventListener("click", handleClick);
-      /*     doc.body?.removeEventListener("keydown", handleKeyDown); */
+      doc.body?.removeEventListener("keydown", handleKeyDown);
     };
   }, [slide?.code]);
 
@@ -170,7 +170,7 @@ function SliderFrame({ slide, colors, setUpdateSlider }: props) {
       <iframe
         ref={iframeRef}
         className="w-[800px] h-[500px] border-0 rounded-2xl"
-        sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups" // ✅ full sandbox permissions
+        sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups"
       />
 
       <FloatActions

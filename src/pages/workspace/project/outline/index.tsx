@@ -9,20 +9,19 @@ import OutlineSection from "@/components/custom/OutlineSection";
 import SliderStyle from "@/components/custom/SliderStyle";
 import { GeminiAiModel } from "@/config/FirebaseConfig";
 import { generatePrompt } from "@/lib/prompt";
-
 import { getDocById, updateDb } from "@/services/firebase";
-import { useParams } from "react-router-dom";
-import { DUMMY_OUTLINE } from "@/assets/dummy";
+import { useNavigate, useParams } from "react-router-dom";
 import { Loader2Icon, SparkleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function Outline() {
   const { projectId } = useParams();
-  const [projectDetails, setProjectDetails] = useState<ProjectTypes>();
   const [loading, setLoading] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
-  const [outline, setOutline] = useState<OutlineType[]>(DUMMY_OUTLINE);
+  const [outline, setOutline] = useState<OutlineType[]>([]);
   const [selectedStyle, setSelectedStyle] = useState<DesignTypes>();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (projectId) {
@@ -42,9 +41,8 @@ function Outline() {
       console.log("Error Messages", res.message);
       return;
     }
-    setProjectDetails(res);
     if (!res?.outline) {
-      /* generateSlidersOutline({ data: res.data }); */
+      generateSlidersOutline({ data: res });
     } else {
       setOutline(res.outline);
     }
@@ -67,11 +65,12 @@ function Outline() {
     setOutline(JsonData);
 
     setLoading(false);
-    console.log(text);
   };
 
-  const updateOutlineData = (outLineNumber: string, data: OutlineType) => {
-    console.log("updateOutlineData", outLineNumber, data);
+  const updateOutlineData = async (
+    outLineNumber: string,
+    data: OutlineType
+  ) => {
     setOutline((prev) =>
       prev.map((item) =>
         item.slideNo === outLineNumber ? { ...item, ...data } : item
@@ -92,6 +91,8 @@ function Outline() {
     });
 
     setUpdateLoading(false);
+
+    navigate(`/workspace/project/${projectId}/editor`);
   };
 
   return (
@@ -103,6 +104,7 @@ function Outline() {
           loading={loading}
           outline={outline || []}
           updateOutlineData={updateOutlineData}
+          editable
         />
       </div>
 
